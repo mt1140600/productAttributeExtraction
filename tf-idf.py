@@ -1,0 +1,2 @@
+def getTF(productList, query):
+
