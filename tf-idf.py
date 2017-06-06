@@ -13,7 +13,7 @@ def scalarProduct(vectorA, vectorB):
         return 0
     return (dotProd)/(modA*modB)
 
-def getDocumentVector(document, all_words_list):
+def getDocumentVector(document, all_words_list, idf_list):
    wordArr = document.split(" ")
    n=len(all_words_list)
    if len(wordArr)==0:
@@ -29,7 +29,8 @@ def getDocumentVector(document, all_words_list):
    docVector = []
    for word in all_words_list:
        if word in temp:
-           wordList[word] = temp[word]
+           wordList[word] = temp[word]*idf_list[word]
+           print str(temp[word])+" "+str(idf_list[word])+" "+word
        else:
            wordList[word] = 0
        # print word
@@ -55,6 +56,7 @@ def idf(word, corpus):
             # print df
     if df == 0 :
         return 0
+    print str(df) +" "+ word
     return (math.log(docNum/df, 2))
 
 def combineTFIDF(tf, idf):
@@ -95,8 +97,6 @@ if __name__ == '__main__':
     m = len(all_words_list)
     all_words_list = sorted(all_words_list.iterkeys())
 
-    for key in idf_list:
-        print str(key)+"  "+str(idf_list[key])
     # print len(all_words_list)
     # print (getDocumentVector('', all_words_list))
     # print idf('imported', corpus)
@@ -105,3 +105,5 @@ if __name__ == '__main__':
     # sorted_x = sorted(x.items(), key=operator.itemgetter(1), reverse=True)
     # for i in range(len(sorted_x)):
     #     print str(sorted_x[i][0])+"  "+str(sorted_x[i][1])
+    # print getDocumentVector('samsung', all_words_list, idf_list)
+    print idf('samsung', corpus)
