@@ -76,12 +76,11 @@ def getRelativeDocs(query, all_words_list):
 if __name__ == '__main__':
     corpus = []
     all_words_list = {}
+    idf_list = {}
     with open('products.csv') as ifile:
         read = csv.reader(ifile)
-        docCount = 0
         for row in read:
-            corpus.append(row[0].lower())
-            docCount=docCount+1
+            corpus.append(removeChars(row[0].lower()))
             words = row[0].split()
             n = len(words)
             for word in words:
@@ -91,11 +90,13 @@ if __name__ == '__main__':
                         all_words_list[word] = all_words_list[word] + 1
                     else:
                         all_words_list[word] = 1
-
+        for word in all_words_list:
+            idf_list[word] = idf(word, corpus)
     m = len(all_words_list)
     all_words_list = sorted(all_words_list.iterkeys())
-    # for key in all_words_list:
-    #     print key
+
+    for key in idf_list:
+        print str(key)+"  "+str(idf_list[key])
     # print len(all_words_list)
     # print (getDocumentVector('', all_words_list))
     # print idf('imported', corpus)
