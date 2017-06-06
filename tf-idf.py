@@ -1,5 +1,4 @@
-
-def getVector(document):
+def getWordList(document):
     wordArr = document.split(" ")
     wordList = {}
     for word in wordArr:
@@ -11,4 +10,4 @@ def getVector(document):
     print n
     return wordList
 
-getVector('hey rghav dude dude jbkrj')
+getWordList('hey raghav dude dude jbkrj')
