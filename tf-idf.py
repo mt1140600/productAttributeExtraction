@@ -100,7 +100,7 @@ def getRelativeDocs(query, all_words_list, idf_list):
             productsList[row[0]] = scalarProduct(documentVector, queryVector)
     return productsList
 
-
+#
 if __name__ == '__main__':
     corpus = []
     all_words_list = {}
@@ -130,8 +130,10 @@ if __name__ == '__main__':
     #     print str(x[i][0])+"   "+str(x[i][1])
     # a = raw_input()
     # a =  removeChars(a)
-    # pwl = enchant.request_pwl_dict("big.txt")
+    pwl = enchant.request_pwl_dict("big.txt")
     # a = a.split()
     # for i in a:
     #     print pwl.suggest(i)
-    print editDistDP('kabar', 'cover', 5,5)
+    str1 = 'kabr'
+    str2 = 'cover'
+    print editDistDP(str1, str2, len(str1), len(str2))
