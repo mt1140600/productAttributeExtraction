@@ -122,6 +122,7 @@ if __name__ == '__main__':
             idf_list[word] = idf(word, corpus)
     m = len(all_words_list)
     all_words_list = sorted(all_words_list.iterkeys())
+
     # print all_words_list
     # x = getRelativeDocs('sr 374', all_words_list, idf_list)
     # x =  sorted(x.items(), key=operator.itemgetter(1), reverse=True)
