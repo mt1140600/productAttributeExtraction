@@ -12,9 +12,18 @@ def scalarProduct(vectorA, vectorB):
         return 0
     return (dotProd)
 
+def removeChars(word):
+    chars = ["/", "(", ")", "&", "+", "-"]
+    for char in chars:
+        word = word.replace(char, " ")
+    word = word.lower()
+    return word
+
+
 def getDocumentVector(document, all_words_list, idf_list):
    document = document.lower()
-   wordArr = document.split(" ")
+   document = removeChars(document)
+   wordArr = document.split()
    n=len(all_words_list)
    if len(wordArr)==0:
        return np.zeros(n)
@@ -25,24 +34,31 @@ def getDocumentVector(document, all_words_list, idf_list):
            temp[word] = temp[word]+1
        else:
            temp[word] = 1
-   mod = math.sqrt(sum(map(lambda x: x*x, temp.values())))
+   # maxValue = max(temp.iteritems(), key = operator.itemgetter(1))[0]
+   # print temp[maxValue]
+   # for key in temp:
+   #     temp[key] = 1.0+math.log(temp[key],2)
    docVector = []
    for word in all_words_list:
        if word in temp:
            wordList[word] = temp[word]*idf_list[word]
        else:
-           wordList[word] = 0
+           # flag = ''
+           # for key in temp:
+           #     try:
+           #         n = word.index(key)
+           #         flag = key
+           #     except:
+           #         n=-1
+           # if not n==-1:
+           #     wordList[word] = temp[flag]*idf_list[word]
+           # else:
+            wordList[word] = 0
 
    for key in wordList:
        docVector.append(wordList[key])
    return np.array(docVector)
 
-def removeChars(word):
-    chars = ["/", "(", ")", "&", "+", "-"]
-    for char in chars:
-        word = word.replace(char, "")
-    word = word.lower()
-    return word
 
 def idf(word, corpus):
     docNum = len(corpus)
@@ -75,10 +91,10 @@ if __name__ == '__main__':
         read = csv.reader(ifile)
         for row in read:
             corpus.append(removeChars(row[0].lower()))
+            row[0] = removeChars(row[0])
             words = row[0].split()
             n = len(words)
             for word in words:
-                word = removeChars(word)
                 if word:
                     if word in all_words_list:
                         all_words_list[word] = all_words_list[word] + 1
@@ -89,8 +105,8 @@ if __name__ == '__main__':
     m = len(all_words_list)
     all_words_list = sorted(all_words_list.iterkeys())
 
-
-    x = getRelativeDocs('asus zenfone 5', all_words_list, idf_list)
+    # print all_words_list
+    x = getRelativeDocs('sr 374', all_words_list, idf_list)
     x =  sorted(x.items(), key=operator.itemgetter(1), reverse=True)
-    for i in range(20):
+    for i in range(50):
         print str(x[i][0])+"   "+str(x[i][1])
