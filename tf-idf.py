@@ -14,8 +14,9 @@ def scalarProduct(vectorA, vectorB):
     return (dotProd)
 
 
-def editDistDP(str1, str2, m, n):
-
+def editDistDP(str1, str2):
+    m = len(str1)
+    n = len(str2)
     dp = [[0 for x in range(n+1)] for y in range(m+1)]
     for i in range(m+1):
         for j in range(n+1):
@@ -100,7 +101,34 @@ def getRelativeDocs(query, all_words_list, idf_list):
             productsList[row[0]] = scalarProduct(documentVector, queryVector)
     return productsList
 
-#
+def spellCheck(queryWord, dict):
+    queryWord = queryWord.lower()
+    suggestions = dict.suggest(queryWord)
+    suggestions = map(lambda x : x.lower(), suggestions)
+    suggestions = sorted(suggestions)
+    print suggestions
+    optDist = 5
+    ind = 0
+    if len(suggestions)==0:
+        return queryWord
+    elif len(suggestions)>1:
+        for i in range(len(suggestions)):
+            dist = editDistDP(queryWord, suggestions[i])
+            if (dist<optDist):
+                optDist = dist
+                ind = i
+                print optDist
+    return suggestions[ind]
+
+def queryCorrector(query, dict):
+    query = removeChars(query)
+    wordArr = query.split()
+    str = ""
+    for i in range(len(wordArr)):
+        wordArr[i] = spellCheck(wordArr[i], dict)
+        str = str+ wordArr[i]+" "
+    return str
+
 if __name__ == '__main__':
     corpus = []
     all_words_list = {}
@@ -123,17 +151,11 @@ if __name__ == '__main__':
     m = len(all_words_list)
     all_words_list = sorted(all_words_list.iterkeys())
 
-    # print all_words_list
-    # x = getRelativeDocs('sr 374', all_words_list, idf_list)
-    # x =  sorted(x.items(), key=operator.itemgetter(1), reverse=True)
-    # for i in range(50):
-    #     print str(x[i][0])+"   "+str(x[i][1])
-    # a = raw_input()
-    # a =  removeChars(a)
     pwl = enchant.request_pwl_dict("big.txt")
-    # a = a.split()
-    # for i in a:
-    #     print pwl.suggest(i)
-    str1 = 'kabr'
-    str2 = 'cover'
-    print editDistDP(str1, str2, len(str1), len(str2))
+    a = raw_input()
+    a = queryCorrector(a, pwl)
+    x =  getRelativeDocs(a, all_words_list, idf_list)
+    x = sorted(x.items(), key=operator.itemgetter(1), reverse=True)
+    for i in range(50):
+        print str(x[i][0])+"   "+str(x[i][1])
+
