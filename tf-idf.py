@@ -2,6 +2,7 @@ import csv
 import math
 import numpy as np
 import operator
+import enchant
 np.set_printoptions(threshold=np.nan)
 
 def scalarProduct(vectorA, vectorB):
@@ -12,6 +13,22 @@ def scalarProduct(vectorA, vectorB):
         return 0
     return (dotProd)
 
+
+def editDistDP(str1, str2, m, n):
+
+    dp = [[0 for x in range(n+1)] for y in range(m+1)]
+    for i in range(m+1):
+        for j in range(n+1):
+            if (i == 0):
+                dp[i][j] = j
+            elif (j == 0):
+                dp[i][j] = i
+            elif (str1[i-1] == str2[j-1]):
+                dp[i][j] = dp[i-1][j-1]
+            else:
+                dp[i][j] = 1 + min(dp[i][j-1], dp[i-1][j], dp[i-1][j-1])
+
+    return dp[m][n]
 
 def removeChars(word):
     chars = ["/", "(", ")", "&", "+", "-"]
@@ -106,7 +123,14 @@ if __name__ == '__main__':
     m = len(all_words_list)
     all_words_list = sorted(all_words_list.iterkeys())
     # print all_words_list
-    x = getRelativeDocs('sr 374', all_words_list, idf_list)
-    x =  sorted(x.items(), key=operator.itemgetter(1), reverse=True)
-    for i in range(50):
-        print str(x[i][0])+"   "+str(x[i][1])
+    # x = getRelativeDocs('sr 374', all_words_list, idf_list)
+    # x =  sorted(x.items(), key=operator.itemgetter(1), reverse=True)
+    # for i in range(50):
+    #     print str(x[i][0])+"   "+str(x[i][1])
+    # a = raw_input()
+    # a =  removeChars(a)
+    # pwl = enchant.request_pwl_dict("big.txt")
+    # a = a.split()
+    # for i in a:
+    #     print pwl.suggest(i)
+    print editDistDP('kabar', 'cover', 5,5)
