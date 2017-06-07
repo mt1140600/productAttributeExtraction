@@ -53,7 +53,7 @@ def getDocumentVector(document, all_words_list, idf_list):
            # if not n==-1:
            #     wordList[word] = temp[flag]*idf_list[word]
            # else:
-            wordList[word] = 0
+           wordList[word] = 0
 
    for key in wordList:
        docVector.append(wordList[key])
