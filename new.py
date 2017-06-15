@@ -8,6 +8,10 @@ from pymongo import MongoClient
 import psycopg2
 import pickle
 
+corpus = []
+all_words_list = {}
+idf_list = {}
+
 def scalarProduct(vectorA, vectorB):
     modA = math.sqrt(sum(map(lambda x:x*x,vectorA)))
     modB = math.sqrt(sum(map(lambda x:x*x,vectorB)))
@@ -62,6 +66,7 @@ def getDocumentVector(document, all_words_list, idf_list):
            wordList[word] = temp[word]*idf_list[word]
        else:
            wordList[word] = 0
+       all_words_list[word] = wordList[word]
 
    for key in wordList:
        docVector.append(wordList[key])
@@ -90,6 +95,16 @@ def getRelativeDocs(query, all_words_list, idf_list):
             productsList[row[0]] = scalarProduct(documentVector, queryVector)
     return productsList
 
+
+def sortDict(dictionary):
+    dictionary = sorted(dictionary.items(), key=operator.itemgetter(1), reverse=True)
+    temp = {}
+    n = len(dictionary)
+    for i in range(n):
+        temp[dictionary[i][0]] = dictionary[i][1]
+    return temp
+
+
 def spellCheck(queryWord, dict):
     queryWord = queryWord.lower()
     suggestions = dict.suggest(queryWord)
@@ -106,7 +121,7 @@ def spellCheck(queryWord, dict):
             if (dist<optDist):
                 optDist = dist
                 ind = i
-                print optDist
+                # print optDist
     return suggestions[ind]
 
 
@@ -191,9 +206,7 @@ if __name__ == '__main__':
     #                 else:
     #                     popularity[details[1]] = 2
 
-    corpus = []
-    all_words_list = {}
-    idf_list = {}
+
     with open('products.csv') as ifile:
         read = csv.reader(ifile)
         for row in read:
@@ -210,11 +223,11 @@ if __name__ == '__main__':
         for word in all_words_list:
             idf_list[word] = idf(word, corpus)
     m = len(all_words_list)
-
-    all_words_list = sorted(all_words_list.iterkeys())
-    print m
-    for i in range(m):
-        print str(all_words_list[i])
+    # print all_words_list
+    all_words_list = sortDict(all_words_list)
+    # newlist = sorted(newlist.items(), key=operator.itemgetter(1), reverse=True)
+    # all_words_list = sorted(all_words_list.iterkeys())
+    # print all_words_list
     pwl = enchant.request_pwl_dict("big.txt")
     print('enter query')
     a = raw_input()
@@ -222,11 +235,11 @@ if __name__ == '__main__':
     print type(a)
     print a
     x = getRelativeDocs(a, all_words_list, idf_list)
-    x = sorted(x.items(), key=operator.itemgetter(1), reverse=True)[:30]
+    # x = sorted(x.items(), key=operator.itemgetter(1), reverse=True)[:30]
     # newList = {}
-    for i in range(30):
-        print str(x[i][0])+' '+str(x[i][1])
-    #     newList[x[i][0]] = popularity[x[i][0]]
+    # for i in range(30):
+    #     print str(x[i][0])+' '+str(x[i][1])
+        # newList[x[i][0]] = popularity[x[i][0]]
     # newList = sorted(newList.items(), key=operator.itemgetter(1), reverse=True)
     # for i in range(30):
     #     flag = True
