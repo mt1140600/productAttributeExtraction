@@ -1,12 +1,28 @@
-import csv
+import pickle
+def save_model(file_name, model_list):
+    with open(file_name, 'wb') as fid:
+        pickle.dump(model_list, fid)
+
+
+def load_model(file_name):
+    with open(file_name, 'rb') as fid:
+        model = pickle.load(fid)
+    return model
 from pymongo import MongoClient
 client = MongoClient('10.240.0.9')
 db = client.prokure2
 pincodedetails = db.productfinals
 brands=[]
+i=0
+x = []
 for row in pincodedetails.find():
-    print row['name']
-
+    x.append(row)
+    print
+    print
+    i=i+1
+    if i>10:
+        break
+save_model('details.pkl', x)
 # with open('newFile.csv','w') as svfile:
 #     spmwriter = csv.writer(svfile)
 #     with open('products.csv') as ifile:
